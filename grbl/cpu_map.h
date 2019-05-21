@@ -149,6 +149,144 @@
 
 #endif
 
+
+
+
+#ifdef CPU_MAP_MPCNC_SHIELD // (Arduino Nano) for MPCNC-ESTLCAM-Shield by Till Nenz
+
+/*
+Has to make some changes, otherwise it will not work with this Hardware
+Step and Direction Pins are easy to change, Stepper enable is not used, Steppers are always enabled, therefore
+I defined Pin B5, which is Input 6 in Estlcam. There is the LED from the Nano.
+Limit-Switches for X and Y are Connected to Pin D7 and Z-Limit is Pin D6. Also Pin change interupt has to be changed to 
+PCIE23.
+cycle start, reset, feed hold are mapped to Input 1, 2 and 3 from Estlcam 
+
+*/
+
+  // Define serial port pins and interrupt vectors.
+  #define SERIAL_RX     USART_RX_vect
+  #define SERIAL_UDRE   USART_UDRE_vect
+
+  // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
+  #define STEP_DDR        DDRC
+  #define STEP_PORT       PORTC
+  #define X_STEP_BIT      3  // Nano Analog Bit 3 (A3)
+  #define Y_STEP_BIT      4  // Nano Analog Bit 4 (A4)
+  #define Z_STEP_BIT      5  // Nano Analog Bit 5 (A5)
+  #define STEP_MASK       ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)) // All step bits
+
+  // Define step direction output pins. NOTE: All direction pins must be on the same port.
+  #define DIRECTION_DDR     DDRC
+  #define DIRECTION_PORT    PORTC
+  #define X_DIRECTION_BIT   0  // Nano Analog Bit 0 (A0)
+  #define Y_DIRECTION_BIT   1  // Nano Analog Bit 1 (A1)
+  #define Z_DIRECTION_BIT   2  // Nano Analog Bit 2 (A2)
+  #define DIRECTION_MASK    ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
+
+  // Define stepper driver enable/disable output pin. Not used with Estlcam, Steppers ar always enabled, therefor I deceded to use the LED Pin at PortB Pin5 as a Placeholder
+  #define STEPPERS_DISABLE_DDR    DDRB
+  #define STEPPERS_DISABLE_PORT   PORTB
+  #define STEPPERS_DISABLE_BIT    5  // Nano Digital Pin 13 (on board LED, ESTLCAM Input 6)
+  #define STEPPERS_DISABLE_MASK   (1<<STEPPERS_DISABLE_BIT)
+
+  // Define homing/hard limit switch input pins and limit interrupt vectors.
+  // NOTE: All limit bit pins must be on the same port, but not on a port with other input pins (CONTROL).
+  #define LIMIT_DDR        DDRB
+  #define LIMIT_PIN        PINB
+  #define LIMIT_PORT       PORTB
+  #define X_LIMIT_BIT      0  // Nano Bit 0  
+  #define Y_LIMIT_BIT      1  // Nano Bit 1
+  #ifdef VARIABLE_SPINDLE // -> Changed booth to the same Pin, because Tills Shield is only with PWM ;)
+    #define Z_LIMIT_BIT	   2 // Nano Bit 2
+  #else
+    #define Z_LIMIT_BIT    2  // Nano Bit 2
+  #endif
+  #define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)) // All limit bits
+  #define LIMIT_INT        PCIE0  // Pin change interrupt enable pin
+  #define LIMIT_INT_vect   PCINT0_vect
+  #define LIMIT_PCMSK      PCMSK0 // Pin change interrupt register
+
+  // Define spindle enable and spindle direction output pins.
+  #define SPINDLE_ENABLE_DDR    DDRD
+  #define SPINDLE_ENABLE_PORT   PORTD
+  // At Tills Shield, no swapping Pins is neede, therfore all 3 are the same pin.
+  #ifdef VARIABLE_SPINDLE
+    #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
+      // If enabled, spindle direction pin now used as spindle enable, while PWM remains on D11.
+      #define SPINDLE_ENABLE_BIT    4  // Spindle enable is always Pin D4 on this Shield
+    #else
+      #define SPINDLE_ENABLE_BIT    4  // 
+    #endif
+  #else
+    #define SPINDLE_ENABLE_BIT    4  // 
+  #endif
+
+/* Commented, because MPCNC-Shield has no Spindledirection Pin 
+ #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
+    #define SPINDLE_DIRECTION_DDR   DDRB
+    #define SPINDLE_DIRECTION_PORT  PORTB
+    #define SPINDLE_DIRECTION_BIT   5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
+  #endif
+*/
+
+  // Define flood and mist coolant enable output pins.
+  #define COOLANT_FLOOD_DDR   DDRD
+  #define COOLANT_FLOOD_PORT  PORTD
+  #define COOLANT_FLOOD_BIT   2  // Nano Pin D2
+  #define COOLANT_MIST_DDR   DDRD
+  #define COOLANT_MIST_PORT  PORTD
+  #define COOLANT_MIST_BIT   3  // Nano Pin D3
+
+  // Define user-control controls (cycle start, reset, feed hold) input pins.
+  // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).
+  #define CONTROL_DDR       DDRD
+  #define CONTROL_PIN       PIND
+  #define CONTROL_PORT      PORTD
+  #define CONTROL_RESET_BIT         6  // Nano Bit 6	Here you should not have anything connected,
+  #define CONTROL_FEED_HOLD_BIT     7  // Nano Bit 7	because of not having enough useable Ports.
+  #define CONTROL_CYCLE_START_BIT   6  // Nano Bit 6
+  #define CONTROL_SAFETY_DOOR_BIT   7  // Nano Bit 7 
+  #define CONTROL_INT       PCIE2  // Pin change interrupt enable pin
+  #define CONTROL_INT_vect  PCINT2_vect
+  #define CONTROL_PCMSK     PCMSK2 // Pin change interrupt register
+  #define CONTROL_MASK      ((1<<CONTROL_RESET_BIT)|(1<<CONTROL_FEED_HOLD_BIT)|(1<<CONTROL_CYCLE_START_BIT)|(1<<CONTROL_SAFETY_DOOR_BIT))
+  #define CONTROL_INVERT_MASK   CONTROL_MASK // May be re-defined to only invert certain control pins.
+
+  // Define probe switch input pin.
+  #define PROBE_DDR       DDRB
+  #define PROBE_PIN       PINB
+  #define PROBE_PORT      PORTB
+  #define PROBE_BIT       3  // Nano Pin D11
+  #define PROBE_MASK      (1<<PROBE_BIT)
+
+  // Variable spindle configuration below. Do not change unless you know what you are doing.
+  // NOTE: Only used when variable spindle is enabled.
+  #define SPINDLE_PWM_MAX_VALUE     255 // Don't change. 328p fast PWM mode fixes top value as 255.
+  #ifndef SPINDLE_PWM_MIN_VALUE
+    #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
+  #endif
+  #define SPINDLE_PWM_OFF_VALUE     0
+  #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
+  #define SPINDLE_TCCRA_REGISTER	  TCCR0A
+  #define SPINDLE_TCCRB_REGISTER	  TCCR0B
+  #define SPINDLE_OCR_REGISTER      OCR0B
+  #define SPINDLE_COMB_BIT	        COM0B1
+
+  // Prescaled, 8-bit Fast PWM mode.
+  #define SPINDLE_TCCRA_INIT_MASK   ((0<<WGM00) | (1<<WGM01) | (1<<WGM00))  // Configures fast PWM mode.
+  // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
+  // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
+  // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz
+  #define SPINDLE_TCCRB_INIT_MASK      ((0<<CS02) | (1<<CS01) |  (1<<CS00))           // 1/64 prescaler -> 0.98kHz (J-tech laser)
+
+  
+  #define SPINDLE_PWM_DDR	  DDRD
+  #define SPINDLE_PWM_PORT  PORTD
+  #define SPINDLE_PWM_BIT	  5    // Nano Digital Pin D5
+
+#endif
+
 /*
 #ifdef CPU_MAP_CUSTOM_PROC
   // For a custom pin map or different processor, copy and edit one of the available cpu
