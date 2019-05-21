@@ -1,5 +1,17 @@
 ![GitHub Logo](https://github.com/gnea/gnea-Media/blob/master/Grbl%20Logo/Grbl%20Logo%20250px.png?raw=true)
 
+Added Support for a new Arduino-Nano-Shield designed by Till Nenz. You can find more information about his shield here on Github.
+Link to Tills repo: https://github.com/tnn85/MPCNC-Nano-Estlcam-Shield
+
+Due to significant pin changes some functions of GRBL can not be used with the shield fom Till:
+
+RESET      
+FEED_HOLD     
+CYCLE_START  
+SAFETY_DOOR
+These four functions are mapped to Port D Bit 6 and 7 (D06 und D07, Terminal E7 und E8).
+### You must not connect anything to these Pins!
+
 ***
 _Click the `Release` tab to download pre-compiled `.hex` files or just [click here](https://github.com/gnea/grbl/releases)_
 ***
