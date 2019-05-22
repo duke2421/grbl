@@ -233,26 +233,27 @@ cycle start, reset, feed hold are mapped to Input 1, 2 and 3 from Estlcam
   // Define flood and mist coolant enable output pins.
   #define COOLANT_FLOOD_DDR   DDRD
   #define COOLANT_FLOOD_PORT  PORTD
-  #define COOLANT_FLOOD_BIT   2  // Nano Pin D2
-  #define COOLANT_MIST_DDR   DDRD
-  #define COOLANT_MIST_PORT  PORTD
-  #define COOLANT_MIST_BIT   3  // Nano Pin D3
+  #define COOLANT_FLOOD_BIT   3  // Nano Pin D3
+  #define COOLANT_MIST_DDR   DDRB
+  #define COOLANT_MIST_PORT  PORTB
+  #define COOLANT_MIST_BIT   2  // Nano Pin D2
 
   // Define user-control controls (cycle start, reset, feed hold) input pins.
-  // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).
+  // NOTE: All CONTROLs can not be used in this Version
+  /*
   #define CONTROL_DDR       DDRD
   #define CONTROL_PIN       PIND
   #define CONTROL_PORT      PORTD
-  #define CONTROL_RESET_BIT         6  // Nano Bit 6	Here you should not have anything connected,
-  #define CONTROL_FEED_HOLD_BIT     7  // Nano Bit 7	because of not having enough useable Ports.
-  #define CONTROL_CYCLE_START_BIT   6  // Nano Bit 6
-  #define CONTROL_SAFETY_DOOR_BIT   7  // Nano Bit 7 
+  #define CONTROL_RESET_BIT         6  // Nano Bit 4	Here you should not have anything connected,
+  #define CONTROL_FEED_HOLD_BIT     7  // Nano Bit 4	because of not having enough useable Ports.
+  #define CONTROL_CYCLE_START_BIT   6  // Nano Bit 4
+  #define CONTROL_SAFETY_DOOR_BIT   7  // Nano Bit 4 
   #define CONTROL_INT       PCIE2  // Pin change interrupt enable pin
   #define CONTROL_INT_vect  PCINT2_vect
   #define CONTROL_PCMSK     PCMSK2 // Pin change interrupt register
   #define CONTROL_MASK      ((1<<CONTROL_RESET_BIT)|(1<<CONTROL_FEED_HOLD_BIT)|(1<<CONTROL_CYCLE_START_BIT)|(1<<CONTROL_SAFETY_DOOR_BIT))
   #define CONTROL_INVERT_MASK   CONTROL_MASK // May be re-defined to only invert certain control pins.
-
+ */
   // Define probe switch input pin.
   #define PROBE_DDR       DDRB
   #define PROBE_PIN       PINB
@@ -274,7 +275,7 @@ cycle start, reset, feed hold are mapped to Input 1, 2 and 3 from Estlcam
   #define SPINDLE_COMB_BIT	        COM0B1
 
   // Prescaled, 8-bit Fast PWM mode.
-  #define SPINDLE_TCCRA_INIT_MASK   ((0<<WGM00) | (1<<WGM01) | (1<<WGM00))  // Configures fast PWM mode.
+  #define SPINDLE_TCCRA_INIT_MASK   ((0<<WGM02) | (1<<WGM01) | (1<<WGM00))  // Configures fast PWM mode.
   // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
   // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
   // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz

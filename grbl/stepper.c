@@ -520,7 +520,7 @@ void stepper_init()
   // TIMSK1 &= ~(1<<OCIE1A);  // Set in st_go_idle().
   
   // If the Pinmapping for Tills MPCNC Shield is used, Timer2 must be used, not Timer0. 
-  #ifdef CPU_MAP_MPCNC_SHIELD 
+/*  #ifndef CPU_MAP_MPCNC_SHIELD 
    // Configure Timer 2: Stepper Port Reset Interrupt // 
    TIMSK2 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)); // Disconnect OC0 outputs and OVF interrupt.
    TCCR2A = 0; // Normal operation
@@ -530,17 +530,18 @@ void stepper_init()
      TIMSK2 |= (1<<OCIE0A); // Enable Timer0 Compare Match A interrupt
    #endif
   #endif
-  
- #ifdef CPU_MAP_ATMEGA328P
+  */
+
+ //#ifndef CPU_MAP_ATMEGA328P
    // Configure Timer 0: Stepper Port Reset Interrupt // 
-   TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)); // Disconnect OC0 outputs and OVF interrupt.
-   TCCR0A = 0; // Normal operation
-   TCCR0B = 0; // Disable Timer0 until needed
-   TIMSK0 |= (1<<TOIE0); // Enable Timer0 overflow interrupt
+   TIMSK2 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)); // Disconnect OC0 outputs and OVF interrupt.
+   TCCR2A = 0; // Normal operation
+   TCCR2B = 0; // Disable Timer0 until needed
+   TIMSK2 |= (1<<TOIE0); // Enable Timer0 overflow interrupt
    #ifdef STEP_PULSE_DELAY
      TIMSK2 |= (1<<OCIE0A); // Enable Timer0 Compare Match A interrupt
    #endif
-  #endif
+ // #endif
   
   
 }
