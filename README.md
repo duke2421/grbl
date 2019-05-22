@@ -3,6 +3,8 @@
 Added Support for a new Arduino-Nano-Shield designed by Till Nenz. You can find more information about his shield here on Github.
 Link to Tills repo: https://github.com/tnn85/MPCNC-Nano-Estlcam-Shield
 
+With GRBL you can use a Laser module easily with LaserGRBL or with Laserweb4. With Estlcam the Laser works not very well, so I decided to make a fork of the GRBL-Code, so that it can be used with Tills shield. If you not have this shield, use the [original GRBL code.](https://github.com/gnea/grbl)   
+
 Due to significant pin changes some functions of GRBL can not be used with the shield fom Till, so I removed the whole code:
 
 RESET      
