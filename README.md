@@ -3,7 +3,7 @@
 Added Support for a new Arduino-Nano-Shield designed by Till Nenz. You can find more information about his shield here on Github.
 Link to Tills repo: https://github.com/tnn85/MPCNC-Nano-Estlcam-Shield
 
-Due to significant pin changes some functions of GRBL can not be used with the shield fom Till:
+Due to significant pin changes some functions of GRBL can not be used with the shield fom Till, so I removed the whole code:
 
 RESET      
 FEED_HOLD     
@@ -11,6 +11,8 @@ CYCLE_START
 SAFETY_DOOR
 These four functions are mapped to Port D Bit 6 and 7 (D06 und D07, Terminal E7 und E8).
 ### You must not connect anything to these Pins!
+
+The endstops at X, Y and Z are tested and working. Connect X Endstop to E1, Y Endstop to E2 and Z to E3. The Probe should be connected to E4, but this is not tested yet.
 
 ***
 _Click the `Release` tab to download pre-compiled `.hex` files or just [click here](https://github.com/gnea/grbl/releases)_
