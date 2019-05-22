@@ -11,6 +11,7 @@ RESET
 FEED_HOLD     
 CYCLE_START  
 SAFETY_DOOR
+
 These four functions are without function and Terminals E7 and E8 are not useable.
 ### You must not connect anything to these Pins!
 
