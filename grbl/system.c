@@ -23,8 +23,7 @@
 
 void system_init()
 {
-	//Comment, because of Testing 
- /* CONTROL_DDR &= ~(CONTROL_MASK); // Configure as input pins
+  CONTROL_DDR &= ~(CONTROL_MASK); // Configure as input pins
   #ifdef DISABLE_CONTROL_PIN_PULL_UP
     CONTROL_PORT &= ~(CONTROL_MASK); // Normal low operation. Requires external pull-down.
   #else
@@ -32,7 +31,6 @@ void system_init()
   #endif
   CONTROL_PCMSK |= CONTROL_MASK;  // Enable specific pins of the Pin Change Interrupt
   PCICR |= (1 << CONTROL_INT);   // Enable Pin Change Interrupt
- */
 }
 
 
@@ -42,20 +40,19 @@ void system_init()
 uint8_t system_control_get_state()
 {
   uint8_t control_state = 0;
-  //Comment, because of Testing
-  /*uint8_t pin = (CONTROL_PIN & CONTROL_MASK);
+  uint8_t pin = (CONTROL_PIN & CONTROL_MASK) ^ CONTROL_MASK;
   #ifdef INVERT_CONTROL_PIN_MASK
     pin ^= INVERT_CONTROL_PIN_MASK;
   #endif
   if (pin) {
     #ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
-      if (bit_isfalse(pin,(1<<CONTROL_SAFETY_DOOR_BIT))) { control_state |= CONTROL_PIN_INDEX_SAFETY_DOOR; }
+      if (bit_istrue(pin,(1<<CONTROL_SAFETY_DOOR_BIT))) { control_state |= CONTROL_PIN_INDEX_SAFETY_DOOR; }
+    #else
+      if (bit_istrue(pin,(1<<CONTROL_FEED_HOLD_BIT))) { control_state |= CONTROL_PIN_INDEX_FEED_HOLD; }
     #endif
-    if (bit_isfalse(pin,(1<<CONTROL_RESET_BIT))) { control_state |= CONTROL_PIN_INDEX_RESET; }
-    if (bit_isfalse(pin,(1<<CONTROL_FEED_HOLD_BIT))) { control_state |= CONTROL_PIN_INDEX_FEED_HOLD; }
-    if (bit_isfalse(pin,(1<<CONTROL_CYCLE_START_BIT))) { control_state |= CONTROL_PIN_INDEX_CYCLE_START; }
+    if (bit_istrue(pin,(1<<CONTROL_RESET_BIT))) { control_state |= CONTROL_PIN_INDEX_RESET; }
+    if (bit_istrue(pin,(1<<CONTROL_CYCLE_START_BIT))) { control_state |= CONTROL_PIN_INDEX_CYCLE_START; }
   }
-  */
   return(control_state);
 }
 
@@ -66,36 +63,34 @@ uint8_t system_control_get_state()
 // directly from the incoming serial data stream.
 ISR(CONTROL_INT_vect)
 {
-	// Comment, because of Testing
- /*	
   uint8_t pin = system_control_get_state();
   if (pin) {
     if (bit_istrue(pin,CONTROL_PIN_INDEX_RESET)) {
       mc_reset();
-    } else if (bit_istrue(pin,CONTROL_PIN_INDEX_CYCLE_START)) {
+    }
+    if (bit_istrue(pin,CONTROL_PIN_INDEX_CYCLE_START)) {
       bit_true(sys_rt_exec_state, EXEC_CYCLE_START);
+    }
     #ifndef ENABLE_SAFETY_DOOR_INPUT_PIN
-      } else if (bit_istrue(pin,CONTROL_PIN_INDEX_FEED_HOLD)) {
+      if (bit_istrue(pin,CONTROL_PIN_INDEX_FEED_HOLD)) {
         bit_true(sys_rt_exec_state, EXEC_FEED_HOLD);
     #else
-      } else if (bit_istrue(pin,CONTROL_PIN_INDEX_SAFETY_DOOR)) {
+      if (bit_istrue(pin,CONTROL_PIN_INDEX_SAFETY_DOOR)) {
         bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
     #endif
     }
   }
-  */
 }
 
 
 // Returns if safety door is ajar(T) or closed(F), based on pin state.
 uint8_t system_check_safety_door_ajar()
 {
-//	Comment, because of Testing
-  //#ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
-  //  return(system_control_get_state() & CONTROL_PIN_INDEX_SAFETY_DOOR);
-  //#else
+  #ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
+    return(system_control_get_state() & CONTROL_PIN_INDEX_SAFETY_DOOR);
+  #else
     return(false); // Input pin not enabled, so just return that it's closed.
-  //#endif
+  #endif
 }
 
 

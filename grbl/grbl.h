@@ -22,8 +22,8 @@
 #define grbl_h
 
 // Grbl versioning system
-#define GRBL_VERSION "1.1g"
-#define GRBL_VERSION_BUILD "20181112"
+#define GRBL_VERSION "1.1h"
+#define GRBL_VERSION_BUILD "20190830"
 
 // Define standard libraries used by Grbl.
 #include <avr/io.h>
@@ -72,9 +72,11 @@
   #error "USE_SPINDLE_DIR_AS_ENABLE_PIN may only be used with VARIABLE_SPINDLE enabled"
 #endif
 
-//#if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && !defined(CPU_MAP_ATMEGA328P)
-//  #error "USE_SPINDLE_DIR_AS_ENABLE_PIN may only be used with a 328p processor"
-//#endif
+#if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && !defined(CPU_MAP_ATMEGA328P)
+	#if !defined(CPU_MAP_MPCNC_SHIELD)
+	  #error "USE_SPINDLE_DIR_AS_ENABLE_PIN may only be used with a 328p processor"
+	#endif
+#endif
 
 #if !defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && defined(SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED)
   #error "SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED may only be used with USE_SPINDLE_DIR_AS_ENABLE_PIN enabled"
@@ -109,6 +111,30 @@
 #endif
 #if (REPORT_OVR_REFRESH_IDLE_COUNT < 1)
   #error "Override refresh must be greater than zero."
+#endif
+
+#if defined(ENABLE_DUAL_AXIS)
+  #if !((DUAL_AXIS_SELECT == X_AXIS) || (DUAL_AXIS_SELECT == Y_AXIS))
+    #error "Dual axis currently supports X or Y axes only."
+  #endif
+  #if defined(DUAL_AXIS_CONFIG_CNC_SHIELD_CLONE) && defined(VARIABLE_SPINDLE)
+    #error "VARIABLE_SPINDLE not supported with DUAL_AXIS_CNC_SHIELD_CLONE."
+  #endif
+  #if defined(DUAL_AXIS_CONFIG_CNC_SHIELD_CLONE) && defined(DUAL_AXIS_CONFIG_PROTONEER_V3_51)
+    #error "More than one dual axis configuration found. Select one."
+  #endif
+  #if !defined(DUAL_AXIS_CONFIG_CNC_SHIELD_CLONE) && !defined(DUAL_AXIS_CONFIG_PROTONEER_V3_51)
+    #error "No supported dual axis configuration found. Select one."
+  #endif
+  #if defined(COREXY)
+    #error "CORE XY not supported with dual axis feature."
+  #endif
+  #if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
+    #error "USE_SPINDLE_DIR_AS_ENABLE_PIN not supported with dual axis feature."
+  #endif
+  #if defined(ENABLE_M7)
+    #error "ENABLE_M7 not supported with dual axis feature."
+  #endif
 #endif
 
 // ---------------------------------------------------------------------------------------
