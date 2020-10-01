@@ -17,6 +17,7 @@ These four functions are without function and Terminals E7 and E8 are not useabl
 
 The endstops at X, Y and Z are tested and working. Connect X Endstop to E1, Y Endstop to E2 and Z to E3. The Probe should be connected to E4, but this is not tested yet.
 
+Updated to GRBL 1.1h, Autosqaure is not useable on the Tillboard!
 
 -------------
 Removed all lines of the original Readme, you can read it at the [original repo](https://github.com/gnea/grbl).
