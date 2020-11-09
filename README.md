@@ -3,7 +3,9 @@
 Added Support for a new Arduino-Nano-Shield designed by Till Nenz. You can find more information about his shield here on Github.
 Link to Tills repo: https://github.com/tnn85/MPCNC-Nano-Estlcam-Shield
 
-With GRBL you can use a Laser module easily with LaserGRBL or with Laserweb4. With Estlcam the Laser works not very well, so I decided to make a fork of the GRBL-Code, so that it can be used with Tills shield. If you not have this shield, use the [original GRBL code.](https://github.com/gnea/grbl)   
+With GRBL you can use a Laser module easily with LaserGRBL or with Laserweb4. With Estlcam the Laser works not very well, so I decided to make a fork of the GRBL-Code, so that it can be used with Tills shield. If you not have this shield, use the [original GRBL code.](https://github.com/gnea/grbl)  
+Output Pins D2 and D3 are now also working. 
+I changed the config, to not use the Z axis for homing.  
 
 Due to significant pin changes some functions of GRBL can not be used with the shield fom Till, so I removed the whole code for:
 
@@ -21,7 +23,7 @@ Updated to GRBL 1.1h, Autosqaure is not useable on the Tillboard!
 
 -------------
 Removed all lines of the original Readme, you can read it at the [original repo](https://github.com/gnea/grbl).
-Because I haven't done anything big to the code, the Donate button will stay as it is an always point to gneas repo.
+Because I haven't done anything big to the code, the Donate button will stay as it is and always point to gneas repo.
 
 -------------
 Grbl is an open-source project and fueled by the free-time of our intrepid administrators and altruistic users. If you'd like to donate, all proceeds will be used to help fund supporting hardware and testing equipment. Thank you!
