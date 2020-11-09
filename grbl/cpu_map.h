@@ -331,8 +331,8 @@ cycle start, reset, feed hold are mapped to Input 1, 2 and 3 from Estlcam
   #define COOLANT_FLOOD_DDR   DDRD
   #define COOLANT_FLOOD_PORT  PORTD
   #define COOLANT_FLOOD_BIT   3  // Nano Pin D3
-  #define COOLANT_MIST_DDR   DDRB
-  #define COOLANT_MIST_PORT  PORTB
+  #define COOLANT_MIST_DDR   DDRD
+  #define COOLANT_MIST_PORT  PORTD
   #define COOLANT_MIST_BIT   2  // Nano Pin D2
 
   // Define user-control controls (cycle start, reset, feed hold) input pins.
